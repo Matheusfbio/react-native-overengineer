@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "abacatepay": {
+      "type": "http",
+      "url": "https://mcp.abacatepay.com/mcp",
+      "headers": {
+        "Authorization": "Bearer abc_dev_gpx5JpbMmaMHwdAzEZ4RGxtx"
+      }
+    }
+  }
+}

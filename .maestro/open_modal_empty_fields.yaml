@@ -1,0 +1,9 @@
+appId: com.reactnativetil
+---
+- launchApp
+- tapOn: "Entrar"
+- assertVisible: "Dados preenchidos"
+- assertVisible: "Nome: "
+- assertVisible: "Email: "
+- tapOn: "Fechar"
+- assertNotVisible: "Dados preenchidos"

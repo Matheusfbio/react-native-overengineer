@@ -1,0 +1,11 @@
+appId: com.reactnativetil
+---
+- launchApp
+- tapOn: "Nome:"
+- inputText: "João Silva"
+- tapOn: "Email:"
+- inputText: "joao@email.com"
+- tapOn: "Entrar"
+- assertVisible: "Dados preenchidos"
+- assertVisible: "Nome: João Silva"
+- assertVisible: "Email: joao@email.com"
