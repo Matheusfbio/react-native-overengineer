@@ -1,12 +1,11 @@
-# Spec Driven Development — Maestro E2E Tests
+# Spec 03 — E2E: Testes Maestro
 
 ## Contexto
 
-Tela principal (`index.tsx`): formulário com campos **Nome** e **Email**, botão **Entrar** e um **Modal** que exibe os dados preenchidos.
+Tela principal (`src/app/index.tsx`): formulário com campos Nome e Email,
+botão Entrar e Modal que exibe os dados preenchidos.
 
----
-
-## Fluxos a testar
+## Fluxos cobertos
 
 ### 1. Preencher formulário e abrir modal
 **Dado** que o app está na tela inicial  
@@ -22,8 +21,6 @@ Tela principal (`index.tsx`): formulário com campos **Nome** e **Email**, botã
 **Dado** que os campos estão vazios  
 **Quando** o usuário toca em "Entrar"  
 **Então** o modal abre mostrando Nome e Email em branco
-
----
 
 ## Flows Maestro
 
@@ -69,8 +66,6 @@ appId: com.reactnativetil
 - tapOn: "Fechar"
 ```
 
----
-
 ## Setup
 
 ```bash
@@ -84,34 +79,28 @@ maestro test .maestro/
 maestro test .maestro/fill_and_open_modal.yaml
 ```
 
-> **Pré-requisito:** app rodando em emulador/dispositivo com `appId` configurado em `app.json` (`android.package` / `ios.bundleIdentifier`).
-
----
-
-## Checklist de implementação
-
-- [ ] Adicionar `testID` nos elementos interativos (ver seção abaixo)
-- [ ] Criar os arquivos `.yaml` em `.maestro/`
-- [ ] Configurar `appId` correto no `app.json`
-- [ ] Validar flows no emulador Android e simulador iOS
-
----
+> Pré-requisito: app rodando em emulador/dispositivo com `appId` configurado em `app.json`.
 
 ## testIDs recomendados
 
-Adicionar `testID` nos elementos de `index.tsx` para seletores mais robustos:
+Adicionar `testID` nos elementos de `src/app/index.tsx` para seletores mais robustos:
 
-| Elemento        | testID sugerido       |
-|-----------------|-----------------------|
-| TextInput Nome  | `input-name`          |
-| TextInput Email | `input-email`         |
-| Botão Entrar    | `button-submit`       |
-| Modal           | `modal-profile`       |
-| Botão Fechar    | `button-close-modal`  |
+| Elemento | testID |
+|---|---|
+| TextInput Nome | `input-name` |
+| TextInput Email | `input-email` |
+| Botão Entrar | `button-submit` |
+| Modal | `modal-profile` |
+| Botão Fechar | `button-close-modal` |
 
-Com testIDs, os flows usam `id:` em vez de texto:
+Com testIDs, os flows usam `id:` em vez de texto literal:
 ```yaml
 - tapOn:
     id: "input-name"
 - inputText: "João Silva"
 ```
+
+## Status
+
+- [x] Flows criados em `.maestro/`
+- [ ] testIDs adicionados em `index.tsx`

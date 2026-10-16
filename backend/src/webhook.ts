@@ -1,3 +1,5 @@
+import { logger } from "./logger.js";
+
 export type Billing = {
   id: string;
   externalId: string;
@@ -9,9 +11,12 @@ export type Billing = {
 export let onPaymentConfirmed: (billing: Billing) => void | Promise<void> = (
   billing,
 ) => {
-  console.log(
-    `[webhook] billing paid billingId=${billing.id} externalId=${billing.externalId}`,
-  );
+  logger.info("webhook", "Payment confirmed", {
+    billingId: billing.id,
+    externalId: billing.externalId,
+    amount: billing.amount,
+    status: billing.status,
+  });
 };
 
 export type WebhookResult =
@@ -31,6 +36,7 @@ export async function handleWebhook(
   const body = rawBody as Record<string, unknown>;
 
   if (body?.event !== "billing.paid") {
+    logger.info("webhook", "Ignored unknown event", { event: body?.event });
     return { status: 200, body: { received: true } };
   }
 

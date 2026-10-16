@@ -3,5 +3,16 @@
     "source.fixAll": "explicit",
     "source.organizeImports": "explicit",
     "source.sortMembers": "explicit"
+  },
+  "chat.mcp.serverSampling": {
+    "react-native-til/.vscode/mcp.json: abacatepay": {
+      "allowedModels": [
+        "copilot/auto",
+        "copilotcli/auto",
+        "agent-host-copilotcli:auto",
+        "agent-host-claude:@provider=anthropic:haiku",
+        "agent-host-claude:@provider=anthropic:sonnet"
+      ]
+    }
   }
 }

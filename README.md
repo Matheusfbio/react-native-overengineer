@@ -1,56 +1,94 @@
-# Welcome to your Expo app 👋
+# react-native-til
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+> Um projeto propositalmente over-engineered para aprender React Native na prática.
 
-## Get started
+A ideia é simples: pegar features que poderiam ser feitas em 50 linhas e construir do jeito "certo" — com backend separado, webhook, specs, logs de auditoria, testes E2E e tudo mais que um projeto de produção teria.
 
-1. Install dependencies
+## O que tem aqui
 
-   ```bash
-   npm install
-   ```
+Um app Expo/React Native com uma micro loja integrada ao **AbacatePay** (gateway de pagamento brasileiro). O usuário vê produtos, toca em "Comprar", é redirecionado para o checkout hospedado e o backend confirma o pagamento via webhook.
 
-2. Start the app
+```
+App (React Native)
+  └── /payment          → lista produtos do AbacatePay
+        → toca Comprar
+        → abre browser com checkout hospedado
+        → fecha browser → volta para a loja
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+Backend (Express)
+  ├── POST /api/payments/checkout   → cria checkout na AbacatePay
+  ├── GET  /api/payments/products   → lista produtos da AbacatePay
+  └── POST /api/payments/webhook    → confirma pagamento (evento billing.paid)
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Stack
 
-### Other setup steps
+| Camada | Tecnologia |
+|--------|-----------|
+| App | React Native 0.86 + Expo SDK 57 |
+| Roteamento | Expo Router (file-based) |
+| Backend | Express 5 + TypeScript ESM |
+| Pagamentos | AbacatePay (checkout hospedado + webhook) |
+| Browser in-app | expo-web-browser |
+| Testes E2E | Maestro |
+| Túnel dev | ngrok |
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Rodar localmente
 
-## Learn more
+**Backend:**
+```bash
+cd backend
+npm install
+cp .env.example .env
+# preencha ABACATEPAY_API_KEY, ABACATEPAY_PRODUCT_ID e ABACATEPAY_WEBHOOK_SECRET
+npm run dev
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+**App:**
+```bash
+yarn install
+yarn start
+```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Para dispositivo físico, exponha o backend com ngrok:
+```bash
+ngrok http 3333
+# atualize ANDROID_HOST em src/constants/api.ts com a URL gerada
+```
 
-## Join the community
+## Documentação
 
-Join our community of developers creating universal apps.
+Toda a documentação de features está em [`docs/`](./docs/README.md).
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+| Doc | Conteúdo |
+|-----|---------|
+| [01-backend-webhook](./docs/01-backend-webhook.md) | Webhook de confirmação de pagamento |
+| [02-frontend-payment-screen](./docs/02-frontend-payment-screen.md) | Tela de pagamento (spec original) |
+| [03-e2e-maestro](./docs/03-e2e-maestro.md) | Testes E2E com Maestro |
+| [04-payment-screen-evolution](./docs/04-payment-screen-evolution.md) | Evolução da loja: produtos dinâmicos, ngrok, correções |
+| [payment-screen](./docs/payment-screen.md) | Documentação técnica completa da tela /payment |
+
+## Estrutura
+
+```
+├── src/
+│   ├── app/              # Rotas (Expo Router file-based)
+│   ├── components/       # ThemedView, ThemedText, CustonButton...
+│   ├── hooks/            # use-checkout, use-products, use-theme...
+│   └── constants/        # theme.ts, api.ts
+├── backend/
+│   └── src/
+│       ├── index.ts      # Servidor Express + rotas
+│       ├── webhook.ts    # Handler de webhook isolado
+│       └── logger.ts     # Logger centralizado com timestamp
+├── docs/                 # Specs e documentação
+└── .maestro/             # Flows de teste E2E
+```
+
+## Regras do projeto
+
+- Rotas em `src/app/` — Expo Router file-based, nunca fora dali
+- `CustonButton` — typo intencional, não renomear
+- `API_HOST` vem de `src/constants/api.ts` — nunca hardcodar URLs
+- `ABACATEPAY_API_KEY` nunca sai do backend
+- Retorno do browser ≠ confirmação de pagamento — isso é responsabilidade do webhook

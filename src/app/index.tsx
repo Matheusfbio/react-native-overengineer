@@ -9,37 +9,53 @@ import {
 
 import { ThemedView } from "@/components/themed-view";
 import { Spacing } from "@/constants/theme";
+import { useTheme } from "@/hooks/use-theme";
+import { Link } from "expo-router";
 import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
+  const theme = useTheme();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
     <SafeAreaView style={styles.safeAreaView} edges={['top']}>
       <ThemedView style={styles.container}>
         <View style={styles.Forms}>
-          <Text style={styles.title}>Meu Perfil</Text>
-          <Text style={styles.title}>Nome:</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Meu Perfil</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Nome</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: theme.text, borderColor: theme.textSecondary }]}
             value={name}
             onChangeText={setName}
           />
-          <Text style={styles.title}>Email:</Text>
+          <Text style={[styles.title, { color: theme.text }]}>Email</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, { color: theme.text, borderColor: theme.textSecondary }]}
             value={email}
             onChangeText={setEmail}
+          />
+          <Text style={[styles.title, { color: theme.text }]}>Senha</Text>
+          <TextInput
+            style={[styles.input, { color: theme.text, borderColor: theme.textSecondary }]}
+            value={senha}
+            onChangeText={setSenha}
+            secureTextEntry={true}
           />
           <Pressable
             onPress={() => setModalVisible(true)}
             style={styles.button}
-          >
-            <Text style={styles.title}>Entrar</Text>
+            >
+            <Text style={[styles.title, { color: theme.text }]}>Entrar</Text>
           </Pressable>
+          <Link href="/signin"
+            style={styles.button}
+          >
+            <Text style={[styles.title, { color: theme.text }]}>Criar uma nova conta</Text>
+          </Link>
 
           <Modal
             visible={modalVisible}
@@ -50,8 +66,9 @@ export default function HomeScreen() {
             <View style={styles.modalOverlay}>
               <View style={styles.modalBox}>
                 <Text style={styles.modalTitle}>Dados preenchidos</Text>
-                <Text style={styles.modalText}>Nome: {name}</Text>
-                <Text style={styles.modalText}>Email: {email}</Text>
+                <Text style={styles.modalText}>Nome {name}</Text>
+                <Text style={styles.modalText}>Email {email}</Text>
+                <Text style={styles.modalText}>Senha {senha}</Text>
                 <Pressable
                   onPress={() => setModalVisible(false)}
                   style={styles.modalButton}
@@ -70,7 +87,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: "20%",
+    marginTop: "1%",
     justifyContent: "center",
     flexDirection: "column",
   },
@@ -87,6 +104,8 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
+    color: "white",
+    textAlign: "center"
   },
   button: {
     padding: 12,
